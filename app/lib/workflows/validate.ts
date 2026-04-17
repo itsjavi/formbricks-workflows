@@ -1,25 +1,13 @@
 import { findActionDescriptor } from './actions-registry'
+import { collectRefs } from './refs'
 import type { Workflow } from './schema'
 import { operatorsFor, resolveRef } from './trigger-output'
 
 export type Issue = {
-  path: string // hint for the UI (e.g. which field)
+  path: string
   message: string
 }
 
-const TEMPLATE_REF_REGEX = /\{\{\s*([^}]+?)\s*\}\}/g
-
-function collectRefsFromString(value: string): string[] {
-  const refs: string[] = []
-  let match: RegExpExecArray | null
-  const regex = new RegExp(TEMPLATE_REF_REGEX.source, 'g')
-  while ((match = regex.exec(value)) !== null) {
-    refs.push(match[1]!.trim())
-  }
-  return refs
-}
-
-// validator shared by the UI and the backend
 export function validate(workflow: Workflow): Issue[] {
   const issues: Issue[] = []
 
@@ -85,7 +73,7 @@ export function validate(workflow: Workflow): Issue[] {
       if (!field.acceptsDataRefs) continue
       const raw = action.config[field.key]
       if (typeof raw !== 'string') continue
-      for (const ref of collectRefsFromString(raw)) {
+      for (const ref of collectRefs(raw)) {
         if (!resolveRef(triggerType, ref)) {
           issues.push({
             path: `${path}.config.${field.key}`,

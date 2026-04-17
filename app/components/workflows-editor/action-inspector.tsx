@@ -12,24 +12,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { findActionDescriptor, type FieldDescriptor } from '@/lib/workflows/actions-registry'
+import { findInvalidRefs, wrapRef } from '@/lib/workflows/refs'
 import type { Workflow } from '@/lib/workflows/schema'
-import { resolveRef } from '@/lib/workflows/trigger-output'
 import { useDraftMutator, useSetSelectedStep } from '@/state/editor'
 
 import { InsertRefPopover } from './insert-ref-popover'
-
-const TEMPLATE_REF_REGEX = /\{\{\s*([^}]+?)\s*\}\}/g
-
-function extractBadRefs(raw: string, triggerType: string | null) {
-  const bad: string[] = []
-  let match: RegExpExecArray | null
-  const regex = new RegExp(TEMPLATE_REF_REGEX.source, 'g')
-  while ((match = regex.exec(raw)) !== null) {
-    const ref = match[1]!.trim()
-    if (!resolveRef(triggerType as never, ref)) bad.push(ref)
-  }
-  return bad
-}
 
 export function ActionInspector({ workflow, actionId }: { workflow: Workflow; actionId: string }) {
   const mutate = useDraftMutator()
@@ -54,7 +41,7 @@ export function ActionInspector({ workflow, actionId }: { workflow: Workflow; ac
 
   const handleInsertRef = useCallback(
     (field: FieldDescriptor, ref: string) => {
-      const token = `{{${ref}}}`
+      const token = wrapRef(ref)
       const el = textareaRefs.current[field.key] ?? inputRefs.current[field.key]
       const currentRaw = action?.config[field.key]
       const current = typeof currentRaw === 'string' ? currentRaw : ''
@@ -106,7 +93,7 @@ export function ActionInspector({ workflow, actionId }: { workflow: Workflow; ac
       {descriptor.fields.map((field) => {
         const rawValue = action.config[field.key]
         const value = typeof rawValue === 'string' ? rawValue : ''
-        const badRefs = field.acceptsDataRefs ? extractBadRefs(value, triggerType) : []
+        const badRefs = field.acceptsDataRefs ? findInvalidRefs(value, triggerType) : []
         const isEmpty = field.required && value.trim() === ''
 
         return (
@@ -148,7 +135,7 @@ export function ActionInspector({ workflow, actionId }: { workflow: Workflow; ac
               {isEmpty && <FieldError>{field.label} is required</FieldError>}
               {badRefs.length > 0 && (
                 <FieldError>
-                  {badRefs.map((ref) => `{{${ref}}}`).join(', ')}{' '}
+                  {badRefs.map(wrapRef).join(', ')}{' '}
                   {badRefs.length === 1 ? 'is' : 'are'} not available on this trigger.
                 </FieldError>
               )}
