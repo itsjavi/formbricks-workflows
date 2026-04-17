@@ -31,26 +31,14 @@ function newId(prefix: string) {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`
 }
 
-function conditionPathsWithIssues(paths: string[]): Record<number, true> {
-  const map: Record<number, true> = {}
+function indexedIssues(paths: string[], prefix: 'conditions' | 'actions'): Set<number> {
+  const re = new RegExp(`^${prefix}\\[(\\d+)\\]`)
+  const out = new Set<number>()
   for (const path of paths) {
-    const match = /^conditions\[(\d+)\]/.exec(path)
-    if (match) map[Number.parseInt(match[1]!, 10)] = true
+    const match = re.exec(path)
+    if (match) out.add(Number(match[1]))
   }
-  return map
-}
-
-function actionPathsWithIssues(paths: string[]): Record<number, true> {
-  const map: Record<number, true> = {}
-  for (const path of paths) {
-    const match = /^actions\[(\d+)\]/.exec(path)
-    if (match) map[Number.parseInt(match[1]!, 10)] = true
-  }
-  return map
-}
-
-function triggerHasIssue(paths: string[]) {
-  return paths.some((p) => p.startsWith('trigger'))
+  return out
 }
 
 export function Editor({ workflow, isNew = false }: { workflow: Workflow; isNew?: boolean }) {
@@ -63,9 +51,10 @@ export function Editor({ workflow, isNew = false }: { workflow: Workflow; isNew?
   const saveFetcher = useFetcher()
 
   const issuePaths = issues.map((i) => i.path)
-  const triggerBad = triggerHasIssue(issuePaths)
-  const condIssues = conditionPathsWithIssues(issuePaths)
-  const actionIssues = actionPathsWithIssues(issuePaths)
+  const triggerBad = issuePaths.some((p) => p.startsWith('trigger'))
+  const condIssues = indexedIssues(issuePaths, 'conditions')
+  const actionIssues = indexedIssues(issuePaths, 'actions')
+  const labels = inspectorLabels(selected, draft)
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -175,8 +164,8 @@ export function Editor({ workflow, isNew = false }: { workflow: Workflow; isNew?
 
       <InspectorPanel
         open={selected !== null}
-        title={inspectorTitle(selected, draft)}
-        subtitle={inspectorSubtitle(selected, draft)}
+        title={labels.title}
+        subtitle={labels.subtitle}
         onClose={() => setSelected(null)}
       >
         {selected?.kind === 'trigger' && <TriggerInspector workflow={draft} />}
@@ -222,7 +211,7 @@ function ConditionsGroup({
   draft: Workflow
   selected: SelectedStep | null
   setSelected: (step: SelectedStep | null) => void
-  condIssues: Record<number, true>
+  condIssues: Set<number>
   onAdd: () => void
 }) {
   const count = draft.conditions.length
@@ -257,7 +246,7 @@ function ConditionsGroup({
                 condition={condition}
                 triggerType={draft.trigger?.type ?? null}
                 selected={selected?.kind === 'condition' && selected.id === condition.id}
-                hasIssue={!!condIssues[index]}
+                hasIssue={condIssues.has(index)}
                 onClick={() => setSelected({ kind: 'condition', id: condition.id })}
               />
             </li>
@@ -321,7 +310,7 @@ function ActionsGroup({
   draft: Workflow
   selected: SelectedStep | null
   setSelected: (step: SelectedStep | null) => void
-  actionIssues: Record<number, true>
+  actionIssues: Set<number>
   onAdd: (descriptor: ActionDescriptor) => void
   onRemove: (id: string) => void
 }) {
@@ -359,7 +348,7 @@ function ActionsGroup({
                   label={`${action.integration}.${action.operation}`}
                   preview={actionPreview(action.config)}
                   selected={selected?.kind === 'action' && selected.id === action.id}
-                  hasIssue={!!actionIssues[index]}
+                  hasIssue={actionIssues.has(index)}
                   onClick={() => setSelected({ kind: 'action', id: action.id })}
                   onRemove={() => onRemove(action.id)}
                 />
@@ -427,34 +416,26 @@ function ActionRow({
   )
 }
 
-function inspectorTitle(selected: SelectedStep | null, _draft: Workflow): string {
-  if (!selected) return ''
+function inspectorLabels(
+  selected: SelectedStep | null,
+  draft: Workflow,
+): { title: string; subtitle: string } {
+  if (!selected) return { title: '', subtitle: '' }
   switch (selected.kind) {
     case 'trigger':
-      return 'Trigger'
+      return { title: 'Trigger', subtitle: 'Survey response created' }
     case 'conditions':
-      return 'Conditions'
-    case 'condition':
-      return 'Condition'
-    case 'action':
-      return 'Action'
-  }
-}
-
-function inspectorSubtitle(selected: SelectedStep | null, draft: Workflow): string {
-  if (!selected) return ''
-  switch (selected.kind) {
-    case 'trigger':
-      return 'Survey response created'
-    case 'conditions':
-      return 'AND filter'
+      return { title: 'Conditions', subtitle: 'AND filter' }
     case 'condition': {
       const c = draft.conditions.find((x) => x.id === selected.id)
-      return c?.left.$ref || 'New condition'
+      return { title: 'Condition', subtitle: c?.left.$ref || 'New condition' }
     }
     case 'action': {
       const a = draft.actions.find((x) => x.id === selected.id)
-      return a ? `${a.integration}.${a.operation}` : 'Action'
+      return {
+        title: 'Action',
+        subtitle: a ? `${a.integration}.${a.operation}` : 'Action',
+      }
     }
   }
 }
