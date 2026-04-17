@@ -135,8 +135,8 @@ export function ActionInspector({ workflow, actionId }: { workflow: Workflow; ac
               {isEmpty && <FieldError>{field.label} is required</FieldError>}
               {badRefs.length > 0 && (
                 <FieldError>
-                  {badRefs.map(wrapRef).join(', ')}{' '}
-                  {badRefs.length === 1 ? 'is' : 'are'} not available on this trigger.
+                  {badRefs.map(wrapRef).join(', ')} {badRefs.length === 1 ? 'is' : 'are'} not
+                  available on this trigger.
                 </FieldError>
               )}
             </FieldContent>
