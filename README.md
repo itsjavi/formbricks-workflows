@@ -29,6 +29,20 @@ canvas.
 - Internationalization
 - Testing infrastructure (unit, e2e)
 
+## Tech stack decisions
+
+The tech stack is based on the one proposed in the [docs/proposal.md](docs/proposal.md) file, except
+for the following:
+
+- TanStack Query: React Router 7 loaders/actions already own fetching, caching, revalidation and SSR
+  streaming, so adding Query would duplicate the cache and split the source of truth. It would only
+  pay off against a separate REST API we don't have here.
+
+- React Hook Form: The editor is a shared document edited across inspectors, popovers and the
+  header, not a single `<form>` with one submit. Jotai + Immer model that document directly, and the
+  same Zod `validate()` runs on client and server, so RHF + resolvers would just mirror state we
+  already own.
+
 ## Development
 
 ```bash
