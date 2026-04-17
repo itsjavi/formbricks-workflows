@@ -1,7 +1,22 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse } from 'react-router'
 
+import { AppShell } from '@/components/app-shell'
+import { getCurrentUser } from '@/server-mocks'
+
 import type { Route } from './+types/root'
 import './app.css'
+
+export function loader() {
+  return { user: getCurrentUser() }
+}
+
+export default function App({ loaderData }: Route.ComponentProps) {
+  return (
+    <AppShell user={loaderData.user}>
+      <Outlet />
+    </AppShell>
+  )
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,10 +36,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function App() {
-  return <Outlet />
-}
-
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = 'Oops!'
   let details = 'An unexpected error occurred.'
@@ -40,11 +51,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="mx-auto max-w-3xl px-8 pt-24">
+      <div className="label-caps mb-4">{message}</div>
+      <h1 className="font-heading text-3xl font-extrabold tracking-tight">Something went wrong</h1>
+      <p className="mt-4 text-muted-foreground">{details}</p>
       {stack && (
-        <pre className="w-full overflow-x-auto p-4">
+        <pre className="mt-6 w-full overflow-x-auto rounded-xl bg-muted p-4 text-xs">
           <code>{stack}</code>
         </pre>
       )}

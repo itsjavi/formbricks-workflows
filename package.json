@@ -18,13 +18,15 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "file-router-collector": "^0.9.0",
+    "immer": "^11.1.4",
     "isbot": "^5.1.39",
     "jotai": "^2.19.1",
     "lucide-react": "^1.8.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router": "^7.14.1",
-    "tailwind-merge": "^3.5.0"
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@react-router/dev": "^7.14.1",
