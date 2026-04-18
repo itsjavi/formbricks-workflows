@@ -3,5 +3,5 @@ export function meta() {
 }
 
 export default function WorkflowsTemplatesPage() {
-  return <div className="mx-auto max-w-5xl px-8 py-12">WIP</div>
+  return <div className="mx-auto max-w-6xl px-8 py-12">Workflow template catalog. Coming soon.</div>
 }

@@ -1,3 +1,4 @@
+import Logo from '@/assets/formbricks-logo.svg?react'
 import { Link, NavLink } from 'react-router'
 
 import type { User } from '@/types'
@@ -12,13 +13,9 @@ export function AppShell({ user, children }: AppShellProps) {
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 backdrop-blur-md backdrop-saturate-150">
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-8 px-8">
-          <Link to="/workflows" className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <span className="font-heading text-sm font-bold">F</span>
-            </div>
-            <span className="font-heading text-[15px] font-extrabold tracking-tight">
-              Formbricks
-            </span>
+          <Link to="/workflows" className="flex items-center gap-2 -mx-4">
+            <Logo className="h-10 w-auto aspect-[795/200]" />
+            <span className="sr-only">Formbricks</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
             <NavItem to="/workflows">Workflows</NavItem>

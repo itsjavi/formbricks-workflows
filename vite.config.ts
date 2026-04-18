@@ -2,9 +2,10 @@ import { reactRouter } from '@react-router/dev/vite'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, type Plugin } from 'vite'
 import babel from 'vite-plugin-babel'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), reactCompiler()],
+  plugins: [tailwindcss(), svgr(), reactRouter(), reactCompiler()],
   resolve: {
     tsconfigPaths: true,
   },

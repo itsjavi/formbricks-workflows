@@ -21,7 +21,7 @@ export default function WorkflowsListPage({ loaderData }: Route.ComponentProps) 
   const hasWorkflows = workflows.length > 0
 
   return (
-    <div className="mx-auto max-w-5xl px-8 py-12">
+    <div className="mx-auto max-w-6xl px-8 py-12">
       <header className="flex items-end justify-between gap-4">
         <div>
           <div className="label-caps">Workflows</div>

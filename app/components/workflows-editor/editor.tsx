@@ -113,7 +113,7 @@ export function Editor({ workflow, isNew = false }: { workflow: Workflow; isNew?
 
   return (
     <>
-      <div className="mx-auto max-w-5xl px-8 py-10 pb-32">
+      <div className="mx-auto max-w-6xl px-8 py-10 pb-32">
         <EditorHeader workflow={workflow} isNew={isNew} autoFocusName={isNew} />
         <div className="mt-10">
           {!hasTrigger ? (

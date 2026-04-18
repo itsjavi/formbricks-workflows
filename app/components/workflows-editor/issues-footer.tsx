@@ -100,7 +100,7 @@ export function IssuesFooter({ workflow, isNew = false }: { workflow: Workflow; 
     <div className="pointer-events-none fixed right-0 bottom-0 left-0 z-20 flex justify-center px-4 pb-6">
       <div
         className={cn(
-          'pointer-events-auto flex w-full max-w-5xl items-center gap-3 rounded-2xl bg-card/90 px-5 py-3 shadow-2xl ring-1 ring-foreground/5 backdrop-blur',
+          'pointer-events-auto flex w-full max-w-6xl items-center gap-3 rounded-2xl bg-card/90 px-5 py-3 shadow-2xl ring-1 ring-foreground/5 backdrop-blur',
         )}
       >
         {isNew && !hasTrigger ? (
