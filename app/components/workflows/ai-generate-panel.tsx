@@ -1,5 +1,6 @@
 import { AlertCircle, Loader2, Sparkles, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { useFetcher } from 'react-router'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -13,18 +14,25 @@ const promptSchema = z.object({
   prompt: z.string().min(PROMPT_MIN).max(PROMPT_MAX),
 })
 
+const EXAMPLES = [
+  'Post to the #promoters Slack channel when someone gives an NPS score of 9 or 10',
+  'Alert #feedback in Slack with the comment whenever a survey response contains the word "bug"',
+  'Send a Slack DM summary for every completed survey response',
+]
+
 type Props = {
   id: string
   onClose: () => void
 }
 
 export function AiGeneratePanel({ id, onClose }: Props) {
+  const fetcher = useFetcher<{ error?: string }>()
   const [prompt, setPrompt] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const isGenerating = false
-  const serverError = null
+  const isGenerating = fetcher.state !== 'idle'
+  const serverError = fetcher.data?.error ?? null
   const error = localError ?? serverError
 
   useEffect(() => {
@@ -39,7 +47,10 @@ export function AiGeneratePanel({ id, onClose }: Props) {
       setLocalError(`Prompt must be between ${PROMPT_MIN} and ${PROMPT_MAX} characters.`)
       return
     }
-    console.log('submit', result.data.prompt)
+    fetcher.submit(
+      { prompt: result.data.prompt },
+      { method: 'post', action: '/workflows/generate' },
+    )
   }
 
   return (
@@ -91,11 +102,37 @@ export function AiGeneratePanel({ id, onClose }: Props) {
               maxLength={PROMPT_MAX}
               placeholder="e.g. Send a Slack message to #promoters when someone gives an NPS score of 9 or 10"
               className="min-h-24"
+              onKeyDown={(event) => {
+                if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+                  event.preventDefault()
+                  event.currentTarget.form?.requestSubmit()
+                }
+              }}
             />
+
+            <div className="flex flex-wrap items-center gap-2">
+              {EXAMPLES.map((example) => (
+                <button
+                  key={example}
+                  type="button"
+                  disabled={isGenerating}
+                  onClick={() => setPrompt(example)}
+                  className={cn([
+                    'rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground',
+                    'transition-colors hover:bg-muted/70 hover:text-foreground',
+                    'disabled:pointer-events-none disabled:opacity-50',
+                  ])}
+                >
+                  {example.length > 48 ? `${example.slice(0, 48)}…` : example}
+                </button>
+              ))}
+            </div>
 
             <div className="mt-1 flex items-center justify-between gap-3">
               <p className="text-xs text-muted-foreground">
-                {isGenerating ? 'Crafting your workflow…' : `${prompt.length}/${PROMPT_MAX}`}
+                {isGenerating
+                  ? 'Crafting your workflow…'
+                  : `${prompt.length}/${PROMPT_MAX} · ⌘/Ctrl + Enter to generate`}
               </p>
               <Button
                 type="submit"

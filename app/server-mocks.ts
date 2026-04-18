@@ -2,6 +2,7 @@ import { data } from 'react-router'
 
 import type { Workflow } from '@/lib/workflows/schema'
 import { createBlankWorkflow } from '@/lib/workflows/utils'
+import { generateWorkflowDraft } from './lib/workflows/ai-generate'
 import type { User } from './types'
 
 // this would be a simple in-memory store, mocking a DB
@@ -89,6 +90,34 @@ export function setAiEnabled(enabled: boolean): void {
 
 export function hasOpenAiApiKey(): boolean {
   return getOpenAiApiKey() !== null
+}
+
+export async function generateCompleteWorkflowDraft(prompt: string): Promise<Workflow> {
+  const apiKey = getOpenAiApiKey()
+
+  if (!apiKey) {
+    throw data({ message: 'AI is not configured. Enable it in Settings.' }, { status: 400 })
+  }
+
+  const draft = await generateWorkflowDraft({
+    prompt,
+    apiKey,
+    model: db.aiSettings.model,
+  })
+
+  const user = getCurrentUser()
+  const workflow: Workflow = updateWorkflow({
+    id: crypto.randomUUID(),
+    name: draft.name,
+    status: 'draft',
+    trigger: draft.trigger,
+    conditions: draft.conditions,
+    actions: draft.actions,
+    ownerId: user.id,
+    updatedAt: new Date().toISOString(),
+  })
+
+  return workflow
 }
 
 // -----
