@@ -1,7 +1,9 @@
 import Logo from '@/assets/formbricks-logo.svg?react'
 import { Link, NavLink } from 'react-router'
 
+import { cn } from '@/lib/utils'
 import type { User } from '@/types'
+import { WorkflowIcon } from 'lucide-react'
 
 type AppShellProps = {
   user: User
@@ -11,14 +13,16 @@ type AppShellProps = {
 export function AppShell({ user, children }: AppShellProps) {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 backdrop-blur-md backdrop-saturate-150">
+      <header className="sticky top-0 z-40 bg-card shadow-xs">
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-8 px-8">
           <Link to="/workflows" className="flex items-center gap-2 -mx-4">
             <Logo className="h-10 w-auto aspect-[795/200]" />
             <span className="sr-only">Formbricks</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
-            <NavItem to="/workflows">Workflows</NavItem>
+            <NavItem to="/workflows" className="flex items-center gap-2">
+              <WorkflowIcon className="size-5 inline-block" /> Workflows
+            </NavItem>
             <NavItem to="/workflows/templates">Templates</NavItem>
           </nav>
           <div className="ml-auto flex items-center gap-3">
@@ -31,16 +35,25 @@ export function AppShell({ user, children }: AppShellProps) {
   )
 }
 
-function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
+function NavItem({
+  to,
+  children,
+  className,
+}: {
+  to: string
+  children: React.ReactNode
+  className?: string
+}) {
   return (
     <NavLink
       to={to}
       end
       className={({ isActive }) =>
-        [
+        cn(
           'font-heading text-sm font-medium transition-colors',
           isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-        ].join(' ')
+          className,
+        )
       }
     >
       {children}
