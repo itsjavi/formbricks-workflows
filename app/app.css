@@ -49,6 +49,12 @@
 }
 
 :root {
+  --color-brand: hsl(176, 100%, 38%);
+  --color-brand-foreground: oklch(0.145 0 0);
+
+  --color-brand-darker: hsl(176, 100%, 28%);
+  --color-brand-darker-foreground: oklch(1 0 0);
+
   --radius: 0.35rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -56,8 +62,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.511 0.096 186.391);
-  --primary-foreground: oklch(0.984 0.014 180.72);
+  --primary: var(--color-brand-darker);
+  --primary-foreground: var(--color-brand-darker-foreground);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(98% 1% 262deg);
@@ -75,8 +81,8 @@
   --chart-5: oklch(0.437 0.078 188.216);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.6 0.118 184.704);
-  --sidebar-primary-foreground: oklch(0.984 0.014 180.72);
+  --sidebar-primary: var(--color-brand-darker);
+  --sidebar-primary-foreground: var(--color-brand-darker-foreground);
   --sidebar-accent: oklch(98% 1% 262deg);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
