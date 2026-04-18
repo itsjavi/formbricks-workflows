@@ -14,7 +14,6 @@ export type SelectedStep =
 export const draftAtom = atom<Workflow | null>(null)
 export const selectedStepAtom = atom<SelectedStep | null>(null)
 export const isDirtyAtom = atom<boolean>(false)
-export const aiEnabledAtom = atom<boolean>(false)
 
 export const issuesAtom = atom((get) => {
   const draft = get(draftAtom)

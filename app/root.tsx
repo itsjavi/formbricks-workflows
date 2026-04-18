@@ -1,17 +1,18 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse } from 'react-router'
 
 import { AppShell } from '@/components/app-shell'
-import { getCurrentUser, isAiEnabled } from '@/server-mocks'
+import { getCurrentUser, hasOpenAiApiKey, isAiEnabled } from '@/server-mocks'
 
 import type { Route } from './+types/root'
 import './app.css'
 import { SettingsHydrator } from './state/settings-hydrator'
 
 export function loader() {
-  return { user: getCurrentUser(), aiEnabled: isAiEnabled() }
+  return { user: getCurrentUser(), aiEnabled: isAiEnabled(), hasOpenAiApiKey: hasOpenAiApiKey() }
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {
+  console.log('loaderData', loaderData)
   return (
     <AppShell user={loaderData.user}>
       <SettingsHydrator aiEnabled={loaderData.aiEnabled} />

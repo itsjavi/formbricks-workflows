@@ -15,7 +15,6 @@ export function WorkflowEmptyState() {
       </p>
       <div className="mt-8">
         <NewWorkflowButton
-          aiEnabled={false}
           onAiButtonClick={() => {
             console.log('ai button clicked')
           }}

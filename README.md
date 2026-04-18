@@ -26,6 +26,16 @@ pnpm dev
 pnpm build && pnpm start
 ```
 
+### Environment variables
+
+Create a `.env` file at the project root:
+
+```bash
+# Required to enable AI-assisted workflow generation. Without it, the feature
+# toggle in /settings stays disabled.
+OPENAI_API_KEY=sk-...
+```
+
 ## Documentation
 
 - [Proposal](docs/proposal.md)

@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 
-import { aiEnabledAtom } from '@/state/editor'
 import { useEffect } from 'react'
+import { aiEnabledAtom } from './settings'
 
 // SSR hydration enabler for global state
 export function SettingsHydrator({ aiEnabled }: { aiEnabled: boolean }) {

@@ -29,7 +29,6 @@ export default function WorkflowsListPage({ loaderData }: Route.ComponentProps) 
         </div>
         {hasWorkflows && (
           <NewWorkflowButton
-            aiEnabled={false}
             onAiButtonClick={() => {
               console.log('ai button clicked')
             }}

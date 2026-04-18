@@ -71,12 +71,23 @@ export function getCurrentUser(): User {
 // -----
 // AI stuff
 
+const AI_MODELS = ['gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4'] as const
+export type AiModel = (typeof AI_MODELS)[number]
+
+export function getAiModels(): Readonly<AiModel[]> {
+  return AI_MODELS
+}
+
 export function getOpenAiApiKey(): string | null {
   return process.env.OPENAI_API_KEY || null
 }
 
 export function isAiEnabled(): boolean {
   return db.aiEnabled && getOpenAiApiKey() !== null
+}
+
+export function setAiEnabled(enabled: boolean): void {
+  db.aiEnabled = enabled
 }
 
 export function hasOpenAiApiKey(): boolean {
