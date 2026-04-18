@@ -6,6 +6,10 @@ import { parseClientIp } from 'request-signals'
 
 import type { Route } from './+types/generate'
 
+export const loader = () => {
+  throw redirect('/workflows?from=generate')
+}
+
 export async function action({ request }: Route.ActionArgs) {
   if (!isAiEnabled()) {
     return data({ error: 'AI is not configured. Enable it in Settings.' }, { status: 400 })

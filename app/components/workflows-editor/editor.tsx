@@ -19,6 +19,7 @@ import {
 
 import { ActionInspector } from './action-inspector'
 import { AddActionPopover } from './add-action-popover'
+import { GeneratedWithAiBanner } from './ai-banner'
 import { ConditionInspector } from './condition-inspector'
 import { EditorHeader } from './editor-header'
 import { FlowConnector } from './flow-connector'
@@ -41,7 +42,15 @@ function indexedIssues(paths: string[], prefix: 'conditions' | 'actions'): Set<n
   return out
 }
 
-export function Editor({ workflow, isNew = false }: { workflow: Workflow; isNew?: boolean }) {
+export function Editor({
+  workflow,
+  isNew = false,
+  generatedWithAi = false,
+}: {
+  workflow: Workflow
+  isNew?: boolean
+  generatedWithAi?: boolean
+}) {
   const draft = useDraft() ?? workflow
   const selected = useSelectedStep()
   const setSelected = useSetSelectedStep()
@@ -114,6 +123,7 @@ export function Editor({ workflow, isNew = false }: { workflow: Workflow; isNew?
   return (
     <>
       <div className="mx-auto max-w-6xl px-8 py-10 pb-32">
+        <GeneratedWithAiBanner defaultVisible={generatedWithAi} />
         <EditorHeader workflow={workflow} isNew={isNew} autoFocusName={isNew} />
         <div className="mt-10">
           {!hasTrigger ? (

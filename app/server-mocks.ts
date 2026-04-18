@@ -23,7 +23,7 @@ const db = {
   aiSettings: {
     enabled: true,
     model: 'gpt-5.4-mini', // 'gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4'
-    maxRequests: 4, // per IP
+    maxRequests: 50, // per IP
     naiveRateLimit: new Map<string, number>(), // ip -> count
   },
 }
@@ -50,10 +50,10 @@ const workflowTable = {
 export function rateLimitAiRequest(ip: string): boolean {
   const count = db.aiSettings.naiveRateLimit.get(ip) ?? 0
   if (count > db.aiSettings.maxRequests) {
-    return false
+    return true
   }
   db.aiSettings.naiveRateLimit.set(ip, count + 1)
-  return true
+  return false
 }
 
 export function listWorkflows(): Workflow[] {

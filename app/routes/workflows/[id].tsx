@@ -14,9 +14,15 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: `${name} · Formbricks` }]
 }
 
-export function loader({ params }: Route.LoaderArgs) {
+export function loader({ params, request }: Route.LoaderArgs) {
   const workflow = getWorkflow(params.id)
-  return { workflow, issues: validate(workflow) }
+  const url = new URL(request.url)
+
+  return {
+    workflow,
+    issues: validate(workflow),
+    generatedWithAi: url.searchParams.get('generated') === 'true',
+  }
 }
 
 export async function action({ params, request }: Route.ActionArgs) {
@@ -85,11 +91,11 @@ export async function action({ params, request }: Route.ActionArgs) {
 }
 
 export default function WorkflowEditorPage({ loaderData }: Route.ComponentProps) {
-  const { workflow } = loaderData
+  const { workflow, generatedWithAi } = loaderData
   return (
     <>
       <EditorHydrator workflow={workflow} />
-      <Editor workflow={workflow} />
+      <Editor workflow={workflow} generatedWithAi={generatedWithAi} />
       <IssuesFooter workflow={workflow} />
     </>
   )
