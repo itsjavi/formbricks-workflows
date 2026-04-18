@@ -37,8 +37,8 @@ export function StepCard({
       }
       data-selected={selected ? 'true' : undefined}
       className={cn(
-        'group/step rounded-2xl bg-card px-6 py-5 transition-all',
-        interactive && 'cursor-pointer hover:bg-secondary/60',
+        'group/step rounded-2xl border border-transparent bg-card px-6 py-5 transition-all',
+        interactive && 'cursor-pointer hover:border-primary',
         selected && 'ring-2 ring-primary/40',
         className,
       )}

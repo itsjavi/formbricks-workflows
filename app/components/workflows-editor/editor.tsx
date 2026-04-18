@@ -293,7 +293,7 @@ function ConditionRow({
       onClick={onClick}
       data-selected={selected || undefined}
       className={cn(
-        'flex w-full items-center gap-3 rounded-xl bg-background px-4 py-3 text-left text-sm transition-colors hover:bg-accent/40',
+        'flex w-full items-center gap-3 rounded-xl border border-transparent bg-background px-4 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-accent/40',
         selected && 'ring-2 ring-primary/40',
         hasIssue && 'ring-1 ring-destructive/30',
       )}
@@ -399,7 +399,7 @@ function ActionRow({
     <div
       data-selected={selected || undefined}
       className={cn(
-        'group/action flex items-center gap-3 rounded-xl bg-background px-4 py-3 transition-colors hover:bg-accent/40',
+        'group/action flex items-center gap-3 rounded-xl border border-transparent bg-background px-4 py-3 transition-colors hover:border-primary hover:bg-accent/40',
         selected && 'ring-2 ring-primary/40',
         hasIssue && 'ring-1 ring-destructive/30',
       )}
