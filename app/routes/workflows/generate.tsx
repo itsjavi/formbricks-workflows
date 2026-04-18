@@ -1,7 +1,8 @@
 import { data, redirect } from 'react-router'
 
 import { humanizeAiError } from '@/lib/workflows/ai-generate'
-import { generateCompleteWorkflowDraft, isAiEnabled } from '@/server-mocks'
+import { generateCompleteWorkflowDraft, isAiEnabled, rateLimitAiRequest } from '@/server-mocks'
+import { parseClientIp } from 'request-signals'
 
 import type { Route } from './+types/generate'
 
@@ -14,6 +15,16 @@ export async function action({ request }: Route.ActionArgs) {
   const prompt = String(form.get('prompt') ?? '').trim()
   if (prompt.length < 4) {
     return data({ error: 'Prompt is too short.' }, { status: 400 })
+  }
+
+  const clientIp = parseClientIp(request).ip || '127.0.0.1'
+  const isRateLimited = rateLimitAiRequest(clientIp)
+
+  if (isRateLimited) {
+    return data(
+      { error: 'You have reached the maximum number of requests. Try again later.' },
+      { status: 429 },
+    )
   }
 
   try {

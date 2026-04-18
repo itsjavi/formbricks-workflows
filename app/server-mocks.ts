@@ -23,6 +23,8 @@ const db = {
   aiSettings: {
     enabled: true,
     model: 'gpt-5.4-mini', // 'gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4'
+    maxRequests: 4, // per IP
+    naiveRateLimit: new Map<string, number>(), // ip -> count
   },
 }
 
@@ -44,6 +46,15 @@ const workflowTable = {
 
 // -----
 // a thin service layer for the PoC
+
+export function rateLimitAiRequest(ip: string): boolean {
+  const count = db.aiSettings.naiveRateLimit.get(ip) ?? 0
+  if (count > db.aiSettings.maxRequests) {
+    return false
+  }
+  db.aiSettings.naiveRateLimit.set(ip, count + 1)
+  return true
+}
 
 export function listWorkflows(): Workflow[] {
   return workflowTable.all().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
