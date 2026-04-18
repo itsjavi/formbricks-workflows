@@ -52,6 +52,14 @@ export const WorkflowSchema = z.object({
   updatedAt: z.string(),
 })
 
+//the draft schema only should hold the fields that are editable
+export const WorkflowDraftSchema = z.object({
+  name: z.string().min(1).max(120),
+  trigger: TriggerSchema.nullable(),
+  conditions: z.array(ConditionSchema),
+  actions: z.array(ActionSchema),
+})
+
 export type DataRef = z.infer<typeof DataRefSchema>
 export type Trigger = z.infer<typeof TriggerSchema>
 export type TriggerType = Trigger['type']
@@ -60,3 +68,4 @@ export type Condition = z.infer<typeof ConditionSchema>
 export type Action = z.infer<typeof ActionSchema>
 export type WorkflowStatus = z.infer<typeof WorkflowStatusSchema>
 export type Workflow = z.infer<typeof WorkflowSchema>
+export type WorkflowDraft = z.infer<typeof WorkflowDraftSchema>

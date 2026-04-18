@@ -12,9 +12,11 @@
     "typecheck": "react-router typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.53",
     "@base-ui/react": "^1.4.0",
     "@react-router/node": "^7.14.1",
     "@react-router/serve": "^7.14.1",
+    "ai": "^6.0.168",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "file-router-collector": "^0.9.0",
