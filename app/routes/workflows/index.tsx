@@ -1,11 +1,8 @@
-import { Plus } from 'lucide-react'
-import { Link } from 'react-router'
-
-import { Button } from '@/components/ui/button'
 import { WorkflowEmptyState } from '@/components/workflows/workflow-empty-state'
 import { WorkflowRow } from '@/components/workflows/workflow-row'
 import { listWorkflows } from '@/server-mocks'
 
+import { NewWorkflowButton } from '@/components/workflows/new-workflow-button'
 import type { Route } from './+types/index'
 
 export function meta() {
@@ -31,10 +28,12 @@ export default function WorkflowsListPage({ loaderData }: Route.ComponentProps) 
           </p>
         </div>
         {hasWorkflows && (
-          <Button size="lg" nativeButton={false} render={<Link to="/workflows/new" />}>
-            <Plus className="size-4" />
-            New workflow
-          </Button>
+          <NewWorkflowButton
+            aiEnabled={false}
+            onAiButtonClick={() => {
+              console.log('ai button clicked')
+            }}
+          />
         )}
       </header>
 

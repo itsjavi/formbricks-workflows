@@ -1,7 +1,6 @@
-import { Plus, Workflow as WorkflowIcon } from 'lucide-react'
-import { Link } from 'react-router'
+import { Workflow as WorkflowIcon } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import { NewWorkflowButton } from './new-workflow-button'
 
 export function WorkflowEmptyState() {
   return (
@@ -14,10 +13,14 @@ export function WorkflowEmptyState() {
         Every workflow starts with a single event. Create one to pick a trigger, add a condition,
         and send data to the tools your team uses.
       </p>
-      <Button size="lg" className="mt-8" nativeButton={false} render={<Link to="/workflows/new" />}>
-        <Plus className="size-4" />
-        Create your first workflow
-      </Button>
+      <div className="mt-8">
+        <NewWorkflowButton
+          aiEnabled={false}
+          onAiButtonClick={() => {
+            console.log('ai button clicked')
+          }}
+        />
+      </div>
     </div>
   )
 }

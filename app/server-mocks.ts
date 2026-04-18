@@ -5,21 +5,35 @@ import { createBlankWorkflow } from '@/lib/workflows/utils'
 import type { User } from './types'
 
 // this would be a simple in-memory store, mocking a DB
-const workflows = new Map<string, Workflow>()
+const db = {
+  workflows: new Map<string, Workflow>(),
+  users: new Map<string, User>([
+    [
+      'usr_1',
+      {
+        id: 'usr_1',
+        name: 'Javier',
+        email: 'javier@acme.test',
+        avatarUrl: null,
+      },
+    ],
+  ]),
+  aiEnabled: false,
+}
 
 const workflowTable = {
   all(): Workflow[] {
-    return Array.from(workflows.values())
+    return Array.from(db.workflows.values())
   },
   get(id: string): Workflow | undefined {
-    return workflows.get(id)
+    return db.workflows.get(id)
   },
   set(workflow: Workflow): Workflow {
-    workflows.set(workflow.id, workflow)
+    db.workflows.set(workflow.id, workflow)
     return workflow
   },
   delete(id: string): boolean {
-    return workflows.delete(id)
+    return db.workflows.delete(id)
   },
 }
 
@@ -50,15 +64,23 @@ export function deleteWorkflow(id: string): boolean {
   return workflowTable.delete(id)
 }
 
-const currentUser: User = {
-  id: 'usr_1',
-  name: 'Javier',
-  email: 'javier@acme.test',
-  avatarUrl: null,
+export function getCurrentUser(): User {
+  return db.users.get('usr_1')!
 }
 
-export function getCurrentUser(): User {
-  return currentUser
+// -----
+// AI stuff
+
+export function getOpenAiApiKey(): string | null {
+  return process.env.OPENAI_API_KEY || null
+}
+
+export function isAiEnabled(): boolean {
+  return db.aiEnabled && getOpenAiApiKey() !== null
+}
+
+export function hasOpenAiApiKey(): boolean {
+  return getOpenAiApiKey() !== null
 }
 
 // -----
@@ -111,10 +133,10 @@ function seedMockData() {
     updatedAt: now,
   }
 
-  workflows.set(promotersToSlack.id, promotersToSlack)
-  workflows.set(bugReportDraft.id, bugReportDraft)
+  db.workflows.set(promotersToSlack.id, promotersToSlack)
+  db.workflows.set(bugReportDraft.id, bugReportDraft)
 }
 
-if (workflows.size === 0) {
+if (db.workflows.size === 0) {
   seedMockData()
 }

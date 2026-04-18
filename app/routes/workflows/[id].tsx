@@ -1,11 +1,11 @@
 import { data, redirect } from 'react-router'
 
 import { Editor } from '@/components/workflows-editor/editor'
-import { EditorHydrator } from '@/components/workflows-editor/editor-hydrator'
 import { IssuesFooter } from '@/components/workflows-editor/issues-footer'
 import { WorkflowSchema } from '@/lib/workflows/schema'
 import { validate } from '@/lib/workflows/validate'
 import { deleteWorkflow, getWorkflow, updateWorkflow } from '@/server-mocks'
+import { EditorHydrator } from '@/state/editor-hydrator'
 
 import type { Route } from './+types/[id]'
 
