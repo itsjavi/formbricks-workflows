@@ -2,7 +2,9 @@ import { WorkflowEmptyState } from '@/components/workflows/workflow-empty-state'
 import { WorkflowRow } from '@/components/workflows/workflow-row'
 import { listWorkflows } from '@/server-mocks'
 
+import { AiGeneratePanel } from '@/components/workflows/ai-generate-panel'
 import { NewWorkflowButton } from '@/components/workflows/new-workflow-button'
+import { useId, useState } from 'react'
 import type { Route } from './+types/index'
 
 export function meta() {
@@ -16,6 +18,12 @@ export function loader() {
 export default function WorkflowsListPage({ loaderData }: Route.ComponentProps) {
   const { workflows } = loaderData
   const hasWorkflows = workflows.length > 0
+  const [aiPanelOpen, setAiPanelOpen] = useState(false)
+  const panelId = useId()
+
+  function handleAiButtonClick() {
+    setAiPanelOpen((open) => !open)
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-8 py-12">
@@ -27,14 +35,14 @@ export default function WorkflowsListPage({ loaderData }: Route.ComponentProps) 
             A workflow listens to an event, checks a condition, and runs an action.
           </p>
         </div>
-        {hasWorkflows && (
-          <NewWorkflowButton
-            onAiButtonClick={() => {
-              console.log('ai button clicked')
-            }}
-          />
-        )}
+        {hasWorkflows && <NewWorkflowButton onAiButtonClick={handleAiButtonClick} />}
       </header>
+
+      {aiPanelOpen && (
+        <section className="mt-8">
+          <AiGeneratePanel id={panelId} onClose={() => setAiPanelOpen(false)} />
+        </section>
+      )}
 
       <section className="mt-10">
         {hasWorkflows ? (

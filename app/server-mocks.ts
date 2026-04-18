@@ -5,6 +5,7 @@ import { createBlankWorkflow } from '@/lib/workflows/utils'
 import type { User } from './types'
 
 // this would be a simple in-memory store, mocking a DB
+// it doesn't work well on serverless (e.g. vercel) and memory is lost on cold starts
 const db = {
   workflows: new Map<string, Workflow>(),
   users: new Map<string, User>([
@@ -18,7 +19,10 @@ const db = {
       },
     ],
   ]),
-  aiEnabled: false,
+  aiSettings: {
+    enabled: true,
+    model: 'gpt-5.4-mini', // 'gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4'
+  },
 }
 
 const workflowTable = {
@@ -71,23 +75,16 @@ export function getCurrentUser(): User {
 // -----
 // AI stuff
 
-const AI_MODELS = ['gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4'] as const
-export type AiModel = (typeof AI_MODELS)[number]
-
-export function getAiModels(): Readonly<AiModel[]> {
-  return AI_MODELS
-}
-
-export function getOpenAiApiKey(): string | null {
+function getOpenAiApiKey(): string | null {
   return process.env.OPENAI_API_KEY || null
 }
 
 export function isAiEnabled(): boolean {
-  return db.aiEnabled && getOpenAiApiKey() !== null
+  return db.aiSettings.enabled && getOpenAiApiKey() !== null
 }
 
 export function setAiEnabled(enabled: boolean): void {
-  db.aiEnabled = enabled
+  db.aiSettings.enabled = enabled
 }
 
 export function hasOpenAiApiKey(): boolean {

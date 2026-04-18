@@ -37,7 +37,7 @@ export function NewWorkflowButton({ onAiButtonClick }: Props) {
         size="lg"
         aria-label="Generate workflow with AI"
         onClick={handleAiButtonClick}
-        className={cn('rounded-l-none border-l-0', { 'bg-neutral-500': !aiEnabled })}
+        className={cn('rounded-l-none border-l-0', { 'opacity-60': !aiEnabled })}
       >
         <Wand2 className="size-4" />
       </Button>

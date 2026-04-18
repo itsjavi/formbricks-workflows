@@ -12,7 +12,6 @@ export function loader() {
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {
-  console.log('loaderData', loaderData)
   return (
     <AppShell user={loaderData.user}>
       <SettingsHydrator aiEnabled={loaderData.aiEnabled} />

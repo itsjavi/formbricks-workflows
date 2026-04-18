@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router'
 
 import { cn } from '@/lib/utils'
 import type { User } from '@/types'
-import { WorkflowIcon } from 'lucide-react'
+import { CogIcon, WorkflowIcon } from 'lucide-react'
 
 type AppShellProps = {
   user: User
@@ -20,10 +20,12 @@ export function AppShell({ user, children }: AppShellProps) {
             <span className="sr-only">Formbricks</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
-            <NavItem to="/workflows" className="flex items-center gap-2">
+            <NavItem to="/workflows">
               <WorkflowIcon className="size-5 inline-block" /> Workflows
             </NavItem>
-            <NavItem to="/workflows/templates">Templates</NavItem>
+            <NavItem to="/settings">
+              <CogIcon className="size-5 inline-block" /> Settings
+            </NavItem>
           </nav>
           <div className="ml-auto flex items-center gap-3">
             <UserChip user={user} />
@@ -50,6 +52,7 @@ function NavItem({
       end
       className={({ isActive }) =>
         cn(
+          'flex items-center gap-2',
           'font-heading text-sm font-medium transition-colors',
           isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
           className,
